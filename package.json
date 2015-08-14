@@ -1,6 +1,6 @@
 {
   "name": "cpu-percent",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "use procfs to return % cpu use for the whole system",
   "main": "index.js",
   "scripts": {

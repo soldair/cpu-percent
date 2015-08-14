@@ -1,7 +1,8 @@
 # cpu-percent
 use procfs to return % cpu use for the whole system
 
-``
+```js
+
 var percent = require('cpu-percent')
 
 percent(function(percent){
