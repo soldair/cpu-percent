@@ -1,0 +1,29 @@
+{
+  "name": "cpu-percent",
+  "version": "1.0.0",
+  "description": "use procfs to return % cpu use over windowed average",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/soldair/cpu-percent.git"
+  },
+  "keywords": [
+    "cpu",
+    "proc",
+    "fs",
+    "use",
+    "load"
+  ],
+  "author": "Ryan Day <soldair@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/soldair/cpu-percent/issues"
+  },
+  "homepage": "https://github.com/soldair/cpu-percent#readme",
+  "dependencies": {
+    "procfs-stats": "0.0.4"
+  }
+}
