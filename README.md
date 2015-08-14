@@ -9,7 +9,7 @@ percent(function(percent){
   console.log(percent,'%')
 })
 
-``
+```
 
 ## API
 
