@@ -1,10 +1,10 @@
 {
   "name": "cpu-percent",
   "version": "1.0.0",
-  "description": "use procfs to return % cpu use over windowed average",
+  "description": "use procfs to return % cpu use for the whole system",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "tape test/*.js"
   },
   "repository": {
     "type": "git",
@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/soldair/cpu-percent#readme",
   "dependencies": {
-    "procfs-stats": "0.0.4"
+    "procfs-stats": "0.0.4",
+    "tape": "^4.1.0"
   }
 }
