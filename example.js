@@ -2,7 +2,7 @@
 var percent = require('./')
 
 
-percent(function(percent){
-  console.log(percent,'%')
+percent(function(err,percent){
+  console.log(err,percent,'%')
 })
 

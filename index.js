@@ -2,8 +2,31 @@ var os = require('os')
 var pfs = require('procfs-stats')
 var numCpus = os.cpus().length;
 
+
+
 module.exports = function(eventHandler,sampleTime,windowSize){
+  return sample(pfs.cpu,eventHandler,sampleTime,windowSize)
+}
+
+// track the cpu use of a specific pid
+module.exports.pid = function(pid,eventHandler,sampleTime,windowSize){
+  var data = pfs(pid)
+  return sample(function(cb){
+    data.stat(function(err,stat){
+      if(err) return cb(err)
+
+      cb(false,{
+        cpu:{
+          user:+stat.utime,
+          system:+stat.stime,
+          nice:0 // all utime is nice if stat.nice so it's not very important to distiguish here
+        }
+      })
+    })
+  },eventHandler,sampleTime,windowSize)
+}
   
+function sample(getCpuData,eventHandler,sampleTime,windowSize){
   windowSize = windowSize||5;
   sampleTime = sampleTime||1000;
 
@@ -15,7 +38,14 @@ module.exports = function(eventHandler,sampleTime,windowSize){
   var start;
 
   var interval =  setInterval(function(){
-    pfs.cpu(function(err,data){
+    getCpuData(function(err,data){
+
+      // it's ok to miss some samples. but this should do better.
+      // for general cpu this shouldnt ever error but if the pid is not in procfs it will error forever if the pid exits.
+
+      // :/ event back with err as second arg... so bad.
+      // this will continue polling after an error.
+      if(err) return eventHandler(err);
 
       var cpu = data.cpu;
       cpu._start = Date.now();
@@ -55,7 +85,7 @@ module.exports = function(eventHandler,sampleTime,windowSize){
         var percentUsed = (cpuTime*100/availableTime)
         if(percentUsed < 0) percentUsed = 0;
 
-        eventHandler(percentUsed);
+        eventHandler(false,percentUsed);
         //console.log('cpu is at ',percentUsed,'%')
 
       } else {
@@ -81,9 +111,6 @@ function addProps(o,o2){
   _e(o,function(v,k){
     d[k] = (+v)+(+o2[k])
   })
-
-  console.log('add',d)
-
   return d;
 }
 
@@ -92,8 +119,6 @@ function subtractProps(o,o2){
   _e(o,function(v,k){
     d[k] = (+v)-(+o2[k])
   })
-
-  console.log('sub',d)
   return d;
 }
 
