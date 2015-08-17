@@ -9,6 +9,7 @@ module.exports = function(eventHandler,sampleTime,windowSize){
 
   var total;
   var eachSample = [];
+  var sampleTimes = [];
   var samples = 0;
   var last;
   var start;
@@ -17,7 +18,7 @@ module.exports = function(eventHandler,sampleTime,windowSize){
     pfs.cpu(function(err,data){
 
       var cpu = data.cpu;
-      var btime = data.btime;
+      cpu._start = Date.now();
 
       // all numbers except btime are in USER_HZ which is 100ths of a second
       // to check the value of USER_HZ on your system run `getconf CLK_TCK` 
@@ -27,6 +28,7 @@ module.exports = function(eventHandler,sampleTime,windowSize){
 
         var diff = subtractProps(cpu,last)
         eachSample.push(diff);
+        sampleTimes.push(last._start)
 
         if(total) total = addProps(diff,total)
         else total = diff;
@@ -35,14 +37,14 @@ module.exports = function(eventHandler,sampleTime,windowSize){
 
         if(eachSample.length > windowSize) {
           var old = eachSample.shift()
+          sampleTimes.shift();
           total = subtractProps(total,old)
           samples--;
         }
-
     
         var cpuTime = (total.user+total.nice+total.system)/100;
 
-        var totalTime = samples*sampleTime;
+        var totalTime = cpu._start-sampleTimes[0]
 
         //console.log(cpuTime,'seconds on '+numCpus+' cpus in the last ',totalTime,'ms')
 
@@ -79,6 +81,9 @@ function addProps(o,o2){
   _e(o,function(v,k){
     d[k] = (+v)+(+o2[k])
   })
+
+  console.log('add',d)
+
   return d;
 }
 
@@ -88,6 +93,7 @@ function subtractProps(o,o2){
     d[k] = (+v)-(+o2[k])
   })
 
+  console.log('sub',d)
   return d;
 }
 
