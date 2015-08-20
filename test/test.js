@@ -37,6 +37,8 @@ test('per pid works',function(t){
     if(++checks != 2) return;
 
     t.ok(percent > 0,'percent '+percent+' > 0')
+    t.ok(typeof stop.unref === 'function','stop should have unref function')
+
     stop();
     t.end()
 

@@ -98,10 +98,16 @@ function sample(getCpuData,eventHandler,sampleTime,windowSize){
   },sampleTime)
 
 
-  return function(){
+  var stop = function(){
+
     clearInterval(interval);
   }
 
+  stop.unref = function(){
+    interval.unref()
+  }
+
+  return stop
 }
 
 
